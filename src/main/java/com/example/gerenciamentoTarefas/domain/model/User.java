@@ -1,10 +1,10 @@
 package com.example.gerenciamentoTarefas.domain.model;
 
 import com.example.gerenciamentoTarefas.domain.enums.UserRoles;
+import com.example.gerenciamentoTarefas.dto.User.UserRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,4 +30,10 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Task> task;
+
+    public User(UserRequest dto) {
+        this.name = dto.getName();
+        this.email = dto.getEmail();
+        this.password = dto.getPassword();
+    }
 }

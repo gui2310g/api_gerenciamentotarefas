@@ -2,9 +2,13 @@ package com.example.gerenciamentoTarefas.dto.User;
 
 import com.example.gerenciamentoTarefas.domain.enums.UserRoles;
 import com.example.gerenciamentoTarefas.domain.model.Task;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
+@AllArgsConstructor
 public class UserResponse {
     private Long id;
 
@@ -13,8 +17,6 @@ public class UserResponse {
     private String email;
 
     private String password;
-
-    private UserRoles status;
 
     private List<Task> task;
 }

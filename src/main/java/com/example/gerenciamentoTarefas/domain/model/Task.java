@@ -1,6 +1,7 @@
 package com.example.gerenciamentoTarefas.domain.model;
 
 import com.example.gerenciamentoTarefas.domain.enums.StatusTask;
+import com.example.gerenciamentoTarefas.dto.Task.TaskRequest;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,4 +31,8 @@ public class Task {
     @JoinColumn(name = "userId")
     private User user;
 
+    public Task(TaskRequest dto) {
+        this.title = dto.getTitle();
+        this.description = dto.getDescription();
+    }
 }
