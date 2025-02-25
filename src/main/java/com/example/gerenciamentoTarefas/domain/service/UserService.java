@@ -1,13 +1,13 @@
 package com.example.gerenciamentoTarefas.domain.service;
 
+import com.example.gerenciamentoTarefas.domain.exception.ResourceBadRequestException;
+import com.example.gerenciamentoTarefas.domain.exception.ResourceNotFoundException;
 import com.example.gerenciamentoTarefas.domain.model.User;
 import com.example.gerenciamentoTarefas.domain.repository.UserRepository;
 import com.example.gerenciamentoTarefas.dto.User.UserRequest;
 import com.example.gerenciamentoTarefas.dto.User.UserResponse;
 import com.example.gerenciamentoTarefas.mapper.UserMapper;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +18,12 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
     private final UserRepository userRepository;
 
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
     @Override
-    public UserResponse create(UserRequest dto) throws RuntimeException {
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) throw new RuntimeException("E-mail já cadastrado!");
+    public UserResponse create(UserRequest dto) {
+        if (userRepository.findByEmail(dto.getEmail()).isPresent())
+            throw new ResourceBadRequestException("E-mail já cadastrado!");
 
         User user = userMapper.toRequest(dto);
         return userMapper.toDto(userRepository.save(user));
@@ -30,6 +31,7 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
     @Override
     public List<UserResponse> findAll() {
+        if(userRepository.findAll().isEmpty()) throw new ResourceNotFoundException("Não há usuario existente");
         return userRepository.findAll().stream().map(userMapper::toDto).toList();
     }
 
@@ -41,7 +43,10 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
     @Override
     public UserResponse update(Long id, UserRequest dto) {
+        findById(id);
+
         User user = userMapper.toRequest(dto);
+        user.setId(id);
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
