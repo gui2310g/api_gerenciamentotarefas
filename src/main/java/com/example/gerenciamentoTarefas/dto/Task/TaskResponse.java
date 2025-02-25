@@ -18,5 +18,5 @@ public class TaskResponse {
 
     private Date dueDate;
 
-    private User user;
+    private Long userId;
 }
