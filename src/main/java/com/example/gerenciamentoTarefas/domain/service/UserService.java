@@ -56,7 +56,7 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
     @Override
     public void delete(Long id) {
-        userRepository.findById(id);
+        findById(id);
         userRepository.deleteById(id);
     }
 }
