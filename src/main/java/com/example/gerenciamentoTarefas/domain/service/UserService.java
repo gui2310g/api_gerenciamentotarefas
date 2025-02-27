@@ -7,18 +7,22 @@ import com.example.gerenciamentoTarefas.domain.repository.UserRepository;
 import com.example.gerenciamentoTarefas.dto.User.UserRequest;
 import com.example.gerenciamentoTarefas.dto.User.UserResponse;
 import com.example.gerenciamentoTarefas.mapper.UserMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    private UserMapper userMapper;
+
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse create(UserRequest dto) {
@@ -26,6 +30,7 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
             throw new ResourceBadRequestException("E-mail já cadastrado!");
 
         User user = userMapper.toRequest(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return userMapper.toDto(userRepository.save(user));
     }
 

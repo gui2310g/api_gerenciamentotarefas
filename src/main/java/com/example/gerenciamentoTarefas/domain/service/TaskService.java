@@ -8,6 +8,7 @@ import com.example.gerenciamentoTarefas.domain.repository.TaskRepository;
 import com.example.gerenciamentoTarefas.dto.Task.TaskRequest;
 import com.example.gerenciamentoTarefas.dto.Task.TaskResponse;
 import com.example.gerenciamentoTarefas.mapper.TaskMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
 
-    private final TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
-    private final TaskMapper taskMapper;
+    private TaskMapper taskMapper;
 
     @Override
     public List<TaskResponse> findAll() {
@@ -60,7 +61,7 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
     public void delete(Long id) {
         Optional<Task> task = taskRepository.findById(id);
 
-        if(task.isEmpty()) throw new ResourceNotFoundException("Não foi encontrado task com id " + id)
+        if(task.isEmpty()) throw new ResourceNotFoundException("Não foi encontrado task com id " + id);
 
         Task task1 = task.get();
         task1.setStatus(StatusTask.CONCLUIDA);
