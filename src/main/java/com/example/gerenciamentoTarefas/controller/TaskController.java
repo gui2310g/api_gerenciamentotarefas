@@ -3,9 +3,11 @@ package com.example.gerenciamentoTarefas.controller;
 import com.example.gerenciamentoTarefas.domain.service.TaskService;
 import com.example.gerenciamentoTarefas.dto.Task.TaskRequest;
 import com.example.gerenciamentoTarefas.dto.Task.TaskResponse;
+import com.example.gerenciamentoTarefas.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskController implements ICrudController <TaskRequest, TaskResponse> {
 
-    private final TaskService taskService;
+    private TaskService taskService;
+
+    private AuthService authService;
 
     @Override
     @PostMapping
@@ -27,6 +31,11 @@ public class TaskController implements ICrudController <TaskRequest, TaskRespons
     @GetMapping
     public ResponseEntity<List<TaskResponse>> findAll() {
         return ResponseEntity.ok(taskService.findAll());
+    }
+
+    @GetMapping("/findByAuth")
+    public ResponseEntity<List<TaskResponse>> findAlLByUserLogged(Authentication authentication) {
+        return ResponseEntity.ok(taskService.findAlLByUserLogged(authService.getAuthenticatedUserId(authentication)));
     }
 
     @Override

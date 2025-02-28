@@ -33,6 +33,13 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
         return taskRepository.findAll().stream().map(taskMapper::toDto).toList();
     }
 
+    public List<TaskResponse> findAlLByUserLogged(Long id) {
+        if(taskRepository.findAllByUserId(id).isEmpty())
+            throw new ResourceNotFoundException("Não há tasks para este usuário");
+
+        return taskRepository.findAllByUserId(id).stream().map(taskMapper::toDto).toList();
+    }
+
     @Override
     public TaskResponse findById(Long id) {
         return taskRepository.findById(id).map(taskMapper::toDto)
@@ -51,6 +58,7 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
             throw new ResourceBadRequestException("Não se pode criar como concluido");
 
         task.setDueDate(new Date());
+        task.setUser(user);
 
         return taskMapper.toDto(taskRepository.save(task));
     }
@@ -71,6 +79,7 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setDueDate(new Date());
+        task.setUser(user);
 
         return taskMapper.toDto(taskRepository.save(task));
     }
