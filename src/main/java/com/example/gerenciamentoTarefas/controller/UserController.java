@@ -3,9 +3,11 @@ package com.example.gerenciamentoTarefas.controller;
 import com.example.gerenciamentoTarefas.domain.service.UserService;
 import com.example.gerenciamentoTarefas.dto.User.UserRequest;
 import com.example.gerenciamentoTarefas.dto.User.UserResponse;
+import com.example.gerenciamentoTarefas.security.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import java.util.List;
 public class UserController implements ICrudController <UserRequest, UserResponse> {
 
     private UserService userService;
+
+    private AuthService authService;
 
     @Override
     @PostMapping
@@ -36,10 +40,10 @@ public class UserController implements ICrudController <UserRequest, UserRespons
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @Override
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserRequest request) {
-        return ResponseEntity.ok(userService.update(id, request));
+
+    @PutMapping
+    public ResponseEntity<UserResponse> update(Authentication authentication, @RequestBody UserRequest request) {
+        return ResponseEntity.ok(userService.update(authService.getAuthenticatedUserId(authentication), request));
     }
 
     @Override

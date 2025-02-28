@@ -31,15 +31,14 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> task;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.status == UserRoles.ADMIN)  return List.of(
-                new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return this.status == UserRoles.ADMIN
+                ? List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"))
+                : List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override

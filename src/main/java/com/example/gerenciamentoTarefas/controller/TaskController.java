@@ -35,7 +35,7 @@ public class TaskController implements ICrudController <TaskRequest, TaskRespons
         return ResponseEntity.ok(taskService.findById(id));
     }
 
-    @Override
+
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> update(@PathVariable Long id, @RequestBody TaskRequest request) {
         return ResponseEntity.ok(taskService.update(id, request));

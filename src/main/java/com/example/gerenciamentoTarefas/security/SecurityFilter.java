@@ -35,10 +35,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             var login = tokenService.validateToken(token);
             Optional<User> userOpt = userRepository.findByEmail(login);
 
-            if (userOpt.isPresent()) {
-                var authentication = getAuthentication(userOpt.get());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            userOpt.ifPresent(user -> SecurityContextHolder.getContext().setAuthentication(getAuthentication(user)));
         }
 
         filterChain.doFilter(request, response);

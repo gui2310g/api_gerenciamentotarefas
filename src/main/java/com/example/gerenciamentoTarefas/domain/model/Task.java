@@ -2,6 +2,7 @@ package com.example.gerenciamentoTarefas.domain.model;
 
 import com.example.gerenciamentoTarefas.domain.enums.StatusTask;
 import com.example.gerenciamentoTarefas.dto.Task.TaskRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -29,10 +30,6 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "userId")
+    @JsonIgnore
     private User user;
-
-    public Task(TaskRequest dto) {
-        this.title = dto.getTitle();
-        this.description = dto.getDescription();
-    }
 }
