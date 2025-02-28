@@ -1,6 +1,9 @@
 package com.example.gerenciamentoTarefas.controller;
 
+import com.example.gerenciamentoTarefas.domain.model.User;
 import com.example.gerenciamentoTarefas.dto.Login.LoginRequest;
+import com.example.gerenciamentoTarefas.dto.Login.LoginResponse;
+import com.example.gerenciamentoTarefas.security.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +21,14 @@ public class AuthController {
 
     private AuthenticationManager authenticationManager;
 
+    private TokenService tokenService;
+
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody @Validated LoginRequest dto) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Validated LoginRequest dto) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
-        var authenticate = authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+        var auth = authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }

@@ -1,4 +1,4 @@
-package com.example.gerenciamentoTarefas.domain.service;
+package com.example.gerenciamentoTarefas.security;
 
 import com.example.gerenciamentoTarefas.domain.repository.UserRepository;
 import lombok.AllArgsConstructor;
