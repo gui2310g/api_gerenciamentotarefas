@@ -79,6 +79,7 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setDueDate(new Date());
+        task.setStatus(dto.getStatus());
         task.setUser(user);
 
         return taskMapper.toDto(taskRepository.save(task));
