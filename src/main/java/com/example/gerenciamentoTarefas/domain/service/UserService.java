@@ -5,9 +5,11 @@ import com.example.gerenciamentoTarefas.domain.exception.ResourceBadRequestExcep
 import com.example.gerenciamentoTarefas.domain.exception.ResourceNotFoundException;
 import com.example.gerenciamentoTarefas.domain.model.User;
 import com.example.gerenciamentoTarefas.domain.repository.UserRepository;
+import com.example.gerenciamentoTarefas.dto.User.UserDetailsResponse;
 import com.example.gerenciamentoTarefas.dto.User.UserRequest;
 import com.example.gerenciamentoTarefas.dto.User.UserResponse;
 import com.example.gerenciamentoTarefas.mapper.UserMapper;
+import com.example.gerenciamentoTarefas.security.TokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserService implements ICRUDService<UserRequest, UserResponse> {
+public class UserService {
 
     private UserRepository userRepository;
 
@@ -25,30 +27,32 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
 
     private PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserResponse create(UserRequest dto) {
+    private TokenService tokenService;
+
+    public UserDetailsResponse create(UserRequest dto) {
         if (userRepository.findByEmail(dto.getEmail()).isPresent())
-            throw new ResourceBadRequestException("E-mail já cadastrado!");
+            throw new ResourceBadRequestException("E-mail já cadastrado!"); 
 
         User user = userMapper.toRequest(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        return userMapper.toDto(userRepository.save(user));
+        String token = tokenService.generateToken(user.getEmail(), user.getStatus().name());
+        UserDetailsResponse response = userMapper.toDetailDto(userRepository.save(user));
+        response.setToken(token);
+
+        return response;
     }
 
-    @Override
     public List<UserResponse> findAll() {
         if(userRepository.findAll().isEmpty()) throw new ResourceNotFoundException("Não há usuario existente");
         return userRepository.findAll().stream()
                 .filter(p -> p.getStatus().equals(UserRoles.USER)).map(userMapper::toDto).toList();
     }
 
-    @Override
     public UserResponse findById(Long id) {
         return userRepository.findById(id).map(userMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Não foi possivel achar usuario com id " + id));
     }
 
-    @Override
     public UserResponse update(Long id, UserRequest dto) {
         findById(id);
 
@@ -65,7 +69,6 @@ public class UserService implements ICRUDService<UserRequest, UserResponse> {
         return userMapper.toDto(userRepository.save(user));
     }
 
-    @Override
     public void delete(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Não foi possivel achar usuario com id " + id));

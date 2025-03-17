@@ -1,13 +1,10 @@
 package com.example.gerenciamentoTarefas.dto.User;
 
-import com.example.gerenciamentoTarefas.domain.enums.UserRoles;
-import com.example.gerenciamentoTarefas.domain.model.Task;
 import lombok.Data;
 
-import java.util.List;
 
 @Data
-public class UserResponse {
+public class UserDetailsResponse {
     private Long id;
 
     private String name;
@@ -16,7 +13,7 @@ public class UserResponse {
 
     private String password;
 
-    private List<Task> task;
+    private String token;
 
     private String status;
 }

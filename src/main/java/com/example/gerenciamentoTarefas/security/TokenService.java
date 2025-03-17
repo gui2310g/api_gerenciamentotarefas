@@ -22,12 +22,13 @@ public class TokenService {
 
     private final UserRepository userRepository;
 
-    public String generateToken(User user) {
+    public String generateToken(String email, String role) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("auth")
-                    .withSubject(user.getEmail())
+                    .withSubject(email)
+                    .withClaim("role", role)
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
