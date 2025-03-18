@@ -87,18 +87,7 @@ public class TaskService implements ICRUDService <TaskRequest, TaskResponse> {
 
     @Override
     public void delete(Long id) {
-        Optional<Task> task = taskRepository.findById(id);
-        if(task.isEmpty()) throw new ResourceNotFoundException("Não foi encontrado task com id " + id);
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Task task1 = task.get();
-
-        if (!task1.getUser().getId().equals(user.getId()))
-            throw new AccessDeniedException("Você não tem permissão para deletar esta tarefa.");
-
-        task1.setStatus(StatusTask.CONCLUIDA);
-        task1.setUser(user);
-
-        taskRepository.save(task1);
+        taskRepository.findById(id);
+        taskRepository.deleteById(id);
     }
 }
