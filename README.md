@@ -1,5 +1,5 @@
 
-# Api Sistema Financeiro
+# Api Gerenciamento Tarefas
 
 Este é uma api desenvolvido com Spring Boot e Docker do projeto full-stack de gerenciamento de tarefas, a api consiste em criação de tarefas com sistema de roles, com sistema de autenticação onde usuario cria suas tarefa com opções de editar, atualizar e excluir, e o admin com opção de visualizar e excluir usuarios
 
